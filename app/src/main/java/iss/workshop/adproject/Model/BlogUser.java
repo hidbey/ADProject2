@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class BlogUser {
-
-
     private int userId;
     private String displayName;
     private String email;

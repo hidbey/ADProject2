@@ -49,10 +49,6 @@ public class Login extends AppCompatActivity {
         signUpBtn = findViewById(R.id.buttonSignUp);
 
         SharedPreferences pref = getSharedPreferences("user", MODE_PRIVATE);
-        String userName = pref.getString("userName", null);
-        if (userName != null) {
-            inHomePage();
-        }
 
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -67,7 +63,9 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 String userName =  usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
-
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("username",userName);
+                editor.commit();
                 ifExist(userName, password);
             }
         });
@@ -91,6 +89,10 @@ public class Login extends AppCompatActivity {
                     List<BlogUser> users = response.body();
                     for (BlogUser user : users) {
                         if (user.getDisplayName().equals(userName) && user.getPassword().equals(password)) {
+                            SharedPreferences pref = getSharedPreferences("user_credentials", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = pref.edit();
+                            editor.putString("username",userName);
+
                             inHomePage();
                         } else if (user.getDisplayName().equals(userName)&&!user.getPassword().equals(password)) {
                             passwordLayout.setError("password is wrong");

@@ -22,6 +22,9 @@ public interface UserDataService {
     @POST("/account/api/bloguser")
     Call<ResponseBody> createUser(@Body BlogUser user);
 
-    @PUT("/user/api/setting/{id}")
-    Call<ResponseBody>updateUser(@Path("id")int id, @Body BlogUser inUser);
+    @PUT("/account/api/setting/{name}")
+    Call<ResponseBody>updateUser(@Path("name")String name, @Body BlogUser inUser);
+
+    @GET("/account/api/blogusers/{name}")
+    Call<BlogUser> getBloguserByDisplayname(@Path("name")String name);
 }

@@ -1,13 +1,21 @@
 package iss.workshop.adproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContentInfo;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -17,7 +25,8 @@ import iss.workshop.adproject.Adapters.MyHomeAdapter;
 
 public class HomeActivity extends AppCompatActivity {//viewPager也需要适配器，这里用的是homeAdapter
     ViewPager2 viewPager2;
-    TabLayout tabLayout;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
 
     private ImageView homeImage, searchImage, historyImage, uploadImage ,imageViewCurrent;
 
@@ -26,9 +35,31 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         viewPager2 = findViewById(R.id.view_pager);
+        navigationView = findViewById(R.id.nav_view);
+        drawerLayout = findViewById(R.id.drawer_layout);
         initViewpager2(viewPager2);
         initImages();
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId()==R.id.profile){
+                    Intent intent = new Intent(HomeActivity.this, UpdateProfile.class);//直接用this,NavigationView.OnNavigationItemSelectedListener 接口的实例，而不是 Activity 的实例。
+                    startActivity(intent);
+                } else if (item.getItemId()==R.id.settings) {
+                    //进入
+                }
+
+
+                //点击抽屉里面的item之后，自动关闭抽屉
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
     }
+
+
+
 
     public void initViewpager2(ViewPager2 viewPager2){
         MyHomeAdapter myHomeAdapter = new MyHomeAdapter(getSupportFragmentManager(),getLifecycle());
