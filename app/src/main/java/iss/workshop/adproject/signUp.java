@@ -3,6 +3,7 @@ package iss.workshop.adproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,7 +36,7 @@ public class signUp extends AppCompatActivity {
     private TextInputEditText usernameEditText, passwordEditText, secondpasswordEditText, emailEditText;
     private Button button;
     UserDataService uDService;
-    String finalPassword;
+    String username, email,finalPassword;
 
 
     @Override
@@ -134,9 +135,9 @@ public class signUp extends AppCompatActivity {
 
         button.setOnClickListener(view -> {
             //在这里执行注册逻辑
-            String username = usernameEditText.getText().toString();
+            username = usernameEditText.getText().toString();
             String password = passwordEditText.getText().toString();
-            String email = emailEditText.getText().toString();
+            email = emailEditText.getText().toString();
 
             BlogUser user = new BlogUser();
             initUser(username,password,email,user);
@@ -149,6 +150,16 @@ public class signUp extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()&&response.body()!=null){
+                        SharedPreferences pref = getSharedPreferences("user", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("username",username);
+                        editor.putString("email",email);
+                        editor.putString("myTechStack",user.getMyTechStack());
+                        editor.putString("profileTagline",user.getProfileTagline());
+                        editor.putString("aboutMe",user.getAboutMe());
+                        editor.putString("location",user.getLocation());
+                        editor.putString("githubLink",user.getGithubLink());
+                        editor.putString("linkedinLink",user.getLinkedinLink());
                         inHomePage();
                     }else{
                         Log.d("2Retrofit", "Response Body: " + response.body());

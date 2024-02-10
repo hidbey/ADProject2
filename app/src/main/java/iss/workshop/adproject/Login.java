@@ -33,6 +33,7 @@ public class Login extends AppCompatActivity {
     private TextInputLayout usernameLayout, passwordLayout;
     private TextInputEditText usernameEditText, passwordEditText;
     private UserDataService uDService;
+    int id;
     //private UserDataService userDataService;
 
     @Override
@@ -65,6 +66,7 @@ public class Login extends AppCompatActivity {
                 String password = passwordEditText.getText().toString();
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putString("username",userName);
+
                 editor.commit();
                 ifExist(userName, password);
             }
@@ -89,10 +91,17 @@ public class Login extends AppCompatActivity {
                     List<BlogUser> users = response.body();
                     for (BlogUser user : users) {
                         if (user.getDisplayName().equals(userName) && user.getPassword().equals(password)) {
-                            SharedPreferences pref = getSharedPreferences("user_credentials", MODE_PRIVATE);
+                            id = user.getUserId();
+                            SharedPreferences pref = getSharedPreferences("user", MODE_PRIVATE);
                             SharedPreferences.Editor editor = pref.edit();
-                            editor.putString("username",userName);
-
+                            editor.putInt("userId",id);
+                            editor.putString("profileTagline",user.getProfileTagline());
+                            editor.putString("aboutMe",user.getAboutMe());
+                            editor.putString("location",user.getLocation());
+                            editor.putString("email",user.getEmail());
+                            editor.putString("githubLink",user.getGithubLink());
+                            editor.putString("linkedinLink",user.getLinkedinLink());
+                            editor.commit();//不能少
                             inHomePage();
                         } else if (user.getDisplayName().equals(userName)&&!user.getPassword().equals(password)) {
                             passwordLayout.setError("password is wrong");

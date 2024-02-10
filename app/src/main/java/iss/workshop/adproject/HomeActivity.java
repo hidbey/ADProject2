@@ -1,5 +1,7 @@
 package iss.workshop.adproject;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -14,6 +16,7 @@ import android.view.ContentInfo;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -27,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
     ViewPager2 viewPager2;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
+    ActivityResultLauncher<Intent> resultLauncher;
 
     private ImageView homeImage, searchImage, historyImage, uploadImage ,imageViewCurrent;
 
@@ -45,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId()==R.id.profile){
                     Intent intent = new Intent(HomeActivity.this, UpdateProfile.class);//直接用this,NavigationView.OnNavigationItemSelectedListener 接口的实例，而不是 Activity 的实例。
-                    startActivity(intent);
+                    resultLauncher.launch(intent);
                 } else if (item.getItemId()==R.id.settings) {
                     //进入
                 }
@@ -56,6 +60,8 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
                 return true;
             }
         });
+
+        registerForResult();
     }
 
 
@@ -129,5 +135,16 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
             imageViewCurrent = uploadImage;
             imageViewCurrent.setSelected(true);
         }
+    }
+
+    private void registerForResult() {
+        resultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+                    result->{//检查结果码为 RESULT_OK
+                        if (result.getResultCode()==AppCompatActivity.RESULT_OK){
+                            Toast.makeText(this,"successfully update your profile",Toast.LENGTH_LONG).show();
+                        }
+                    }
+        );
     }
 }
