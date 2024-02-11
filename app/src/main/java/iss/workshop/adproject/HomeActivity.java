@@ -3,6 +3,7 @@ package iss.workshop.adproject;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -10,7 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.ContentInfo;
 import android.view.MenuItem;
@@ -53,7 +56,23 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
                 } else if (item.getItemId()==R.id.settings) {
                     //进入
                 } else if (item.getItemId()==R.id.logout) {
-                    
+                    new AlertDialog.Builder(HomeActivity.this)
+                            .setTitle("Logout")
+                            .setMessage("Are you sure you want to logout?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    SharedPreferences pref = getSharedPreferences("user", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = pref.edit();
+                                    editor.clear();
+                                    editor.commit();
+                                    Intent intent = new Intent(HomeActivity.this, Login.class);
+                                    startActivity(intent);
+                                    // Optionally, if you want to remove the HomeActivity from the stack so the user can't go back to it
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
                 }
 
 
