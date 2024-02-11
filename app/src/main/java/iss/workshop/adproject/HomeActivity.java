@@ -52,6 +52,8 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
                     resultLauncher.launch(intent);
                 } else if (item.getItemId()==R.id.settings) {
                     //进入
+                } else if (item.getItemId()==R.id.logout) {
+                    
                 }
 
 

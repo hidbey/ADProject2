@@ -36,7 +36,8 @@
 
         <activity
             android:name=".HomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".signUp"
             android:exported="false" />
