@@ -16,9 +16,7 @@ public class Blog {
     private int blogCommentCount;
     private int blogLikeCount;
 
-
     private List<BlogHistory> blogHistories;
-
 
     private BlogUser blogUser;
 

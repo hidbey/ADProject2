@@ -19,8 +19,10 @@ import android.view.ContentInfo;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -33,19 +35,26 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
     ViewPager2 viewPager2;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
+    BottomNavigationView bottomNavigationView;
+    View headerView;
+    TextView usernameText;
     ActivityResultLauncher<Intent> resultLauncher;
 
-    private ImageView homeImage, searchImage, historyImage, uploadImage ,imageViewCurrent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        SharedPreferences pref = getSharedPreferences("user", MODE_PRIVATE);
         viewPager2 = findViewById(R.id.view_pager);
         navigationView = findViewById(R.id.nav_view);
+        headerView = navigationView.getHeaderView(0);
+        usernameText = headerView.findViewById(R.id.usernameText);
+        usernameText.setText("Hello, "+pref.getString("username",null));
         drawerLayout = findViewById(R.id.drawer_layout);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         initViewpager2(viewPager2);
-        initImages();
+
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -75,18 +84,34 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
                             .show();
                 }
 
-
                 //点击抽屉里面的item之后，自动关闭抽屉
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }
         });
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int position = 0; // 默认位置
+                if (item.getItemId() == R.id.homeImage) {
+                    position = 0;
+                } else if (item.getItemId() == R.id.historyImage) {
+                    position = 1;
+                } else if (item.getItemId() == R.id.searchImage) {
+                    position = 2;
+                } else if (item.getItemId() == R.id.uploadImage) {
+                    position = 3;
+                }
+//                getSupportFragmentManager().beginTransaction().replace(R.id.view_pager, selectedFragment).commit();
+//                return true;Viewpager应该通过适配器来管理fragment，切换删除添加，而不是通过FragmentManager
+                viewPager2.setCurrentItem(position, true); // 切换到指定位置的 Fragment
+                return true;
+            }
+        });
+
         registerForResult();
     }
-
-
-
 
     public void initViewpager2(ViewPager2 viewPager2){
         MyHomeAdapter myHomeAdapter = new MyHomeAdapter(getSupportFragmentManager(),getLifecycle());
@@ -102,61 +127,63 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                changePager(position);//通过这个方法来使得图片跟随页面一起变化
+                bottomNavigationView.setSelectedItemId(getBottomNavigationItemId(position));//通过这个方法来使得图片跟随页面一起变化
             }
         });//监听页面变化的消息，当页面变化时传递当前页面的位置，也就是当前页面对应的fragment在集合中的索引
     }
 
-    public void initImages(){
-        homeImage = findViewById(R.id.homeImage);
-        searchImage = findViewById(R.id.searchImage);
-        historyImage = findViewById(R.id.historyImage);
-        uploadImage = findViewById(R.id.uploadImage);
 
-        imageViewCurrent = homeImage;
-        imageViewCurrent.setSelected(true);
-    }
 
-    public void changeClick(View view){
-        imageViewCurrent.setSelected(false);//如果当前是在第二个，点击第三个的话，就让第二个为false，第三个为true
-        if (view.getId()==R.id.homeImage){
-            viewPager2.setCurrentItem(0,true);//使得页面切换具有平滑效果
-            imageViewCurrent = homeImage;
-            imageViewCurrent.setSelected(true);
-        } else if (view.getId()==R.id.historyImage) {
-            viewPager2.setCurrentItem(2,true);
-            imageViewCurrent = historyImage;
-            imageViewCurrent.setSelected(true);
-        } else if (view.getId()==R.id.searchImage) {
-            viewPager2.setCurrentItem(1,true);
-            imageViewCurrent = searchImage;
-            imageViewCurrent.setSelected(true);
-        }else if (view.getId()==R.id.uploadImage){
-            viewPager2.setCurrentItem(3,true);
-            imageViewCurrent = uploadImage;
-            imageViewCurrent.setSelected(true);
-        }
-    }
-
-    public void changePager(int position){
-        if (position==0){
-            imageViewCurrent.setSelected(false);
-            imageViewCurrent = homeImage;
-            imageViewCurrent.setSelected(true);
-        } else if (position==1) {
-            imageViewCurrent.setSelected(false);
-            imageViewCurrent = searchImage;
-            imageViewCurrent.setSelected(true);
-        } else if (position==2) {
-            imageViewCurrent.setSelected(false);
-            imageViewCurrent = historyImage;
-            imageViewCurrent.setSelected(true);
-        }else if (position==3){
-            imageViewCurrent.setSelected(false);
-            imageViewCurrent = uploadImage;
-            imageViewCurrent.setSelected(true);
-        }
-    }
+//    public void initImages(){
+//        homeImage = findViewById(R.id.homeImage);
+//        searchImage = findViewById(R.id.searchImage);
+//        historyImage = findViewById(R.id.historyImage);
+//        uploadImage = findViewById(R.id.uploadImage);
+//
+//        imageViewCurrent = homeImage;
+//        imageViewCurrent.setSelected(true);
+//    }
+//
+//    public void changeClick(View view){
+//        imageViewCurrent.setSelected(false);//如果当前是在第二个，点击第三个的话，就让第二个为false，第三个为true
+//        if (view.getId()==R.id.homeImage){
+//            viewPager2.setCurrentItem(0,true);//使得页面切换具有平滑效果
+//            imageViewCurrent = homeImage;
+//            imageViewCurrent.setSelected(true);
+//        } else if (view.getId()==R.id.historyImage) {
+//            viewPager2.setCurrentItem(2,true);
+//            imageViewCurrent = historyImage;
+//            imageViewCurrent.setSelected(true);
+//        } else if (view.getId()==R.id.searchImage) {
+//            viewPager2.setCurrentItem(1,true);
+//            imageViewCurrent = searchImage;
+//            imageViewCurrent.setSelected(true);
+//        }else if (view.getId()==R.id.uploadImage){
+//            viewPager2.setCurrentItem(3,true);
+//            imageViewCurrent = uploadImage;
+//            imageViewCurrent.setSelected(true);
+//        }
+//    }
+//
+//    public void changePager(int position){
+//        if (position==0){
+//            imageViewCurrent.setSelected(false);
+//            imageViewCurrent = homeImage;
+//            imageViewCurrent.setSelected(true);
+//        } else if (position==1) {
+//            imageViewCurrent.setSelected(false);
+//            imageViewCurrent = searchImage;
+//            imageViewCurrent.setSelected(true);
+//        } else if (position==2) {
+//            imageViewCurrent.setSelected(false);
+//            imageViewCurrent = historyImage;
+//            imageViewCurrent.setSelected(true);
+//        }else if (position==3){
+//            imageViewCurrent.setSelected(false);
+//            imageViewCurrent = uploadImage;
+//            imageViewCurrent.setSelected(true);
+//        }
+//    }
 
     private void registerForResult() {
         resultLauncher = registerForActivityResult(
@@ -167,5 +194,20 @@ public class HomeActivity extends AppCompatActivity {//viewPager也需要适配�
                         }
                     }
         );
+    }
+
+    private int getBottomNavigationItemId(int position) {
+        switch (position) {
+            case 0:
+                return R.id.homeImage;
+            case 1:
+                return R.id.historyImage;
+            case 2:
+                return R.id.searchImage;
+            case 3:
+                return R.id.uploadImage;
+            default:
+                return 0;
+        }
     }
 }

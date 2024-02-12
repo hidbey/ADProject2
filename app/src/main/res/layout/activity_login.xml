@@ -8,11 +8,23 @@
     android:paddingRight="16dp"
     android:paddingBottom="16dp">
 
+    <TextView
+        android:id="@+id/logoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NBlog"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/usernameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username">
+        android:hint="Username"
+        android:layout_below="@id/logoTextView"
+        android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/usernameEditText"
@@ -20,14 +32,13 @@
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="Password"
         android:layout_below="@id/usernameLayout"
-        android:hint="Password">
+        android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEditText"
@@ -38,20 +49,22 @@
 
     <Button
         android:id="@+id/buttonLogin"
-        android:layout_width="192dp"
+        android:layout_width="188dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/passwordLayout"
         android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="8dp"
         android:text="Login" />
 
     <Button
         android:id="@+id/buttonSignUp"
-        android:layout_width="192dp"
+        android:layout_width="188dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/passwordLayout"
-        android:layout_marginLeft="208dp"
         android:layout_marginTop="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
         android:text="SignUp" />
-
 
 </RelativeLayout>

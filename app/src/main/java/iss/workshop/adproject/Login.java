@@ -34,7 +34,7 @@ public class Login extends AppCompatActivity {
     private TextInputEditText usernameEditText, passwordEditText;
     private UserDataService uDService;
     int id;
-    //private UserDataService userDataService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +65,6 @@ public class Login extends AppCompatActivity {
                 String userName =  usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
                 SharedPreferences.Editor editor = pref.edit();
-                editor.putString("username",userName);
-
                 editor.commit();
                 ifExist(userName, password);
             }
@@ -95,14 +93,10 @@ public class Login extends AppCompatActivity {
                             SharedPreferences pref = getSharedPreferences("user", MODE_PRIVATE);
                             SharedPreferences.Editor editor = pref.edit();
                             editor.putInt("userId",id);
-                            editor.putString("profileTagline",user.getProfileTagline());
-                            editor.putString("aboutMe",user.getAboutMe());
-                            editor.putString("location",user.getLocation());
-                            editor.putString("email",user.getEmail());
-                            editor.putString("githubLink",user.getGithubLink());
-                            editor.putString("linkedinLink",user.getLinkedinLink());
+                            editor.putString("username",user.getDisplayName());
                             editor.commit();//不能少
                             inHomePage();
+                            return;
                         } else if (user.getDisplayName().equals(userName)&&!user.getPassword().equals(password)) {
                             passwordLayout.setError("password is wrong");
                             return;
@@ -116,7 +110,6 @@ public class Login extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<BlogUser>> call, Throwable t) {
-                Log.e("Retrofit", "Error: " + t.getMessage(), t);
             }
         });
     }//验证是否存在该用户
